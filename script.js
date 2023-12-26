@@ -504,33 +504,33 @@ function showInstructionsAlert() {
     }
 }
 
-function drawCellAt(x, y) {
-    // Get the adjusted mouse position based on zoom and offset
-    let adjustedX = (x - offset.x) / zoomFactor;
-    let adjustedY = (y - offset.y) / zoomFactor;
+// function drawCellAt(x, y) {
+//     // Get the adjusted mouse position based on zoom and offset
+//     let adjustedX = (x - offset.x) / zoomFactor;
+//     let adjustedY = (y - offset.y) / zoomFactor;
   
-    // Get the cell index based on the adjusted mouse position
-    let i = floor(adjustedX / CELL_SIZE);
-    let j = floor(adjustedY / CELL_SIZE);
+//     // Get the cell index based on the adjusted mouse position
+//     let i = floor(adjustedX / CELL_SIZE);
+//     let j = floor(adjustedY / CELL_SIZE);
   
-    // Toggle the cell state
-    if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
-      grid[i][j] = 1;
-      history.push(createVector(i, j));  // Add cell position to history
-    }
-  }
+//     // Toggle the cell state
+//     if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
+//       grid[i][j] = 1;
+//       history.push(createVector(i, j));  // Add cell position to history
+//     }
+//   }
   
 
-function mousePressed() {
-    isDrawing = true;
-    drawCellAt(mouseX, mouseY);
-  }
+// function mousePressed() {
+//     isDrawing = true;
+//     drawCellAt(mouseX, mouseY);
+//   }
   
-  function mouseDragged() {
-    drawCellAt(mouseX, mouseY);
-  }
+//   function mouseDragged() {
+//     drawCellAt(mouseX, mouseY);
+//   }
   
-  function mouseReleased() {
-    isDrawing = false;
-  }
+//   function mouseReleased() {
+//     isDrawing = false;
+//   }
   
