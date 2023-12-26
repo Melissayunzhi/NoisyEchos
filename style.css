@@ -1,0 +1,171 @@
+html{
+  overflow: auto;
+}
+
+body {
+
+  font-family:sans-serif;
+
+  overflow: auto; /* or overflow: scroll; */
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+  /* position: relative; */
+
+}
+
+
+
+canvas {
+  display: block;
+
+}
+
+.draggable{
+  font-size:medium;
+  font-weight:100;
+  cursor:grab;
+  position: absolute;
+
+}
+
+
+#word {
+  position: absolute;
+  transition: transform 0.5s;
+}
+
+#stars{
+  position: fixed;
+  padding: 10px;
+  display: inline-block;
+}
+
+.dropbox {
+  width: 350px;
+  height: 40px;
+  padding: 15px;
+  border: 1px solid #292828;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#container{
+  position: absolute;
+ /* z-index: 2;*/
+}
+
+
+
+#image img, img {
+  width: 100%; 
+}
+
+#video{
+  display:none;
+}
+
+.div1{
+  margin: 0;
+  padding: 0;
+  display: block;
+  position: relative;
+  z-index: -1;
+}
+
+
+#save-button {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  position: absolute;
+  top: 10px; /* Adjust the top position as needed */
+  left: 10px; /* Adjust the left position as needed */
+  background: white;
+  color: #100e0e; /* Text color */
+  cursor: pointer;
+}
+
+#help {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  position: absolute;
+  top: 10px; /* Adjust the top position as needed */
+  right: 10px;
+  background: white;
+  color: #100e0e; /* Text color */
+  cursor:help;
+  
+}
+
+.title {
+  font-size: 24px;
+  border-bottom: 2px dashed #ffffff;
+  padding: 10px 0;
+  display: inline-block;
+}
+
+.artist {
+  font-size: 12px;
+  font-style: italic;
+  color: #cccccc;
+}
+
+.poem {
+  width: 500px;
+  left: 30px;
+}
+
+  .line {
+    text-align: justify;
+    line-height: 1.5;
+    text-indent: 2em; /* Add an indentation to prevent the first line from being justified */
+    display: flex;
+    justify-content: center;
+}
+
+
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.animated {
+  animation: bounce 10s infinite;
+  animation: flash 10s infinite;
+
+
+}
+
+
+.note {
+  font-size: 10px;
+  color: #ddd7d7;
+
+}
+
+.comma {
+  font-size: 18px;
+  margin: 0 5px;
+}
+
+.list {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+
+.list-item {
+  margin: 10px 0;
+}
+
+/* Experiment with other CSS properties as needed */
