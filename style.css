@@ -168,4 +168,20 @@ canvas {
   margin: 10px 0;
 }
 
-/* Experiment with other CSS properties as needed */
+.styled-button {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background: white;
+  color: #100e0e;
+  cursor: pointer;
+  text-decoration: none;
+  position: absolute;
+
+}
+
+
+#hub-link {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%); /* Centers the button */
+}
+

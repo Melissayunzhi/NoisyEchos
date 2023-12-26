@@ -1,5 +1,5 @@
 # NoisyEchos
-Conway's Game of Life meet poseNet web cam
+## Conway's Game of Life meet poseNet web cam
 
 In my latest project, I've developed an interactive website that brings to life the 'Game of Life', a cellular automaton devised by John Conway. This grid-based game evolves each cell based on its neighbors, representing the unpredictability of life's interactions. My twist on this concept involves integrating PoseNet, a machine learning model that allows users to interact with the grid using their body movements. As you move in front of your webcam, you directly influence the cells on the screen, creating a dynamic interaction between physical motion and digital change.
 

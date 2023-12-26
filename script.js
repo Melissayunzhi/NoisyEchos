@@ -2,6 +2,7 @@ let CELL_SIZE = 15;       // Size of each cell
 let gridSize;               // Number of columns and rows in the grid
 let grid;                   // 2D array to store the grid
 let isDrawing = false;              // Flag to indicate whether the mouse is being dragged
+let generationCount = 0; // Add this line
 
 // Add some text-based art to represent cells:
 const cellArt = ['█', '▒', '░', '▓', '▄', '■'];
@@ -150,6 +151,10 @@ function draw() {
     nextGeneration();  // Calculate the next generation
     timer = millis();  // Reset the timer
   }
+  // fill(255); // Set fill color for text
+  // textSize(16); // Set text size
+  // text('Generations: ' + generationCount, 10, 30); // Display generation count
+
 }
 
 function applyZoomAndOffset() {
@@ -209,6 +214,8 @@ function keyPressed() {
     initializeGrid();
     followRules = false;  // Stop following the rules of Game of Life
     history = [];      // Clear the history
+    generationCount = 0; // Reset generation count
+
   } else if (key === ' ') {
     // Toggle video pause and play when the spacebar is pressed
     if (videoPaused) {
@@ -220,6 +227,8 @@ function keyPressed() {
 
     // Pause or continue the simulation
     isPaused = !isPaused;
+    generationCount = 0; // Reset generation count
+
   } else if (key === 'u' || key === 'U') {
     // Undo the last drawn cell
     if (history.length > 0) {
@@ -300,6 +309,10 @@ function nextGeneration() {
 
   // Update the grid with the new generation
   grid = nextGrid;
+
+  generationCount++; // Increment the generation count
+  document.getElementById('generation-count').innerText = generationCount; // Update HTML
+
 }
 
 function countNeighbors(x, y) {
@@ -359,6 +372,8 @@ function drawKeypoints() {
                 grid[i][j] = 1;
                 history.push(createVector(i, j)); // Add cell position to history
               }
+              generationCount = 0; // Reset generation count
+
             }
           }
 
