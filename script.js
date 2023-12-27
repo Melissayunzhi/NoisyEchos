@@ -3,6 +3,8 @@ let gridSize;               // Number of columns and rows in the grid
 let grid;                   // 2D array to store the grid
 let isDrawing = false;              // Flag to indicate whether the mouse is being dragged
 let generationCount = 0; // Add this line
+let saveNextGenerations = false;
+let generationsToSave = [];
 
 // Add some text-based art to represent cells:
 const cellArt = ['█', '▒', '░', '▓', '▄', '■'];
@@ -14,7 +16,7 @@ let helpVisible = true; // Flag to control visibility
 let alertShown = false; // Flag to track whether the alert has been shown
 
 
-let DELAY = 500;          // Delay in milliseconds before new cells start following the rules
+let DELAY = 1000;          // Delay in milliseconds before new cells start following the rules
 let followRules = false;            // Flag to indicate whether to follow the rules of Game of Life
 let isPaused = true;               // Flag to indicate whether the simulation is paused
 let timer;                      // Timer to track the delay
@@ -60,7 +62,7 @@ setInterval(() => {
 function modelLoaded() {
     console.log("Model Loaded!");
     // div.innerHTML = "Posenet model loaded!";
-
+    drawGenerationCountOnCanvas()
 }
 
 function setup() {
@@ -151,11 +153,24 @@ function draw() {
     nextGeneration();  // Calculate the next generation
     timer = millis();  // Reset the timer
   }
-  // fill(255); // Set fill color for text
-  // textSize(16); // Set text size
-  // text('Generations: ' + generationCount, 10, 30); // Display generation count
+
+ 
+ if (saveNextGenerations && generationsToSave.includes(generationCount)) {
+    drawGenerationCountOnCanvas(); // Ensure font settings are applied
+    saveCanvas('Generation_' + generationCount, 'png');
+    // Remove generation from the array to prevent multiple saves
+    const index = generationsToSave.indexOf(generationCount);
+    if (index > -1) {
+        generationsToSave.splice(index, 1);
+    }
+}
+
+
 
 }
+
+
+
 
 function applyZoomAndOffset() {
   translate(width / 2, height / 2);
@@ -305,6 +320,7 @@ function nextGeneration() {
         break;
     }
     }
+  
   }
 
   // Update the grid with the new generation
@@ -313,6 +329,11 @@ function nextGeneration() {
   generationCount++; // Increment the generation count
   document.getElementById('generation-count').innerText = generationCount; // Update HTML
 
+
+// Stop saving process after 10 generations
+if (generationCount >= Math.max(...generationsToSave)) {
+  saveNextGenerations = false;
+}
 }
 
 function countNeighbors(x, y) {
@@ -372,7 +393,6 @@ function drawKeypoints() {
                 grid[i][j] = 1;
                 history.push(createVector(i, j)); // Add cell position to history
               }
-              generationCount = 0; // Reset generation count
 
             }
           }
@@ -458,9 +478,52 @@ function windowResized(){
 }
 
 function saveCanvasImage() {
-    // Save the canvas as an image (e.g., PNG format)
-    saveCanvas('your_canvas_image', 'png');
+  // Reset the array
+  generationsToSave = []; // Start with the current generation
+
+   // Select three unique generations to save
+   while (generationsToSave.length < 5) {
+    let gen = Math.floor(Math.random() * 10) + generationCount + 1;
+    if (!generationsToSave.includes(gen)) {
+        generationsToSave.push(gen);
+    }
+}
+
+  // Activate the saving process
+  saveNextGenerations = true;
+
+  // // Immediately save the current generation
+  // if (generationsToSave.includes(generationCount)) {
+  //     drawGenerationCountOnCanvas();
+  //     saveCanvas('Generation_' + generationCount, 'png');
+  // }
+
+  // Ensure the simulation is running
+  if (isPaused) {
+      isPaused = false;
   }
+}
+
+
+
+function drawGenerationCountOnCanvas() {
+  push(); // Save current drawing settings
+
+  // Reverse the mirroring for text
+  textFont('Carrois Gothic'); // Set the custom font here
+
+  translate(width, 0); // Move to the right side of the canvas
+  scale(-1, 1); // Flip horizontally
+
+  // Draw the text
+  fill(255); // White color for text
+  textSize(16); // Set text size
+  textAlign(LEFT, BOTTOM); // Align text to the left and bottom    
+  text("Generation: " + generationCount, 10, height - 10); // Position at bottom-left
+
+  pop(); // Restore original drawing settings
+}
+
 
   // Detect cursor hover over the right corner
 function detectCursorHover() {
