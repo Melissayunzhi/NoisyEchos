@@ -6,8 +6,6 @@ let generationCount = 0; // Add this line
 let saveNextGenerations = false;
 let generationsToSave = [];
 
-// Add some text-based art to represent cells:
-const cellArt = ['█', '▒', '░', '▓', '▄', '■'];
 
 let videoPaused = false;
 
@@ -67,6 +65,33 @@ function modelLoaded() {
 
 function setup() {
 
+    // Select the about button and popup div
+    let aboutBtn = select('#about');
+    let aboutPopup = select('#aboutPopup');
+
+    // Apply styling to the popup
+    aboutPopup.style('font-family', "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif");
+    aboutPopup.style('background-color', 'rgba(255, 255, 255, 0.8)');
+    aboutPopup.style('padding', '10px');
+    aboutPopup.style('text-align', 'center');
+    aboutPopup.style('border-radius', '8px');
+    aboutPopup.style('position', 'absolute');
+    aboutPopup.style('top', '50%');
+    aboutPopup.style('left', '50%');
+    aboutPopup.style('transform', 'translate(-50%, -50%)');
+    aboutPopup.style('box-shadow', '0 4px 8px rgba(0,0,0,0.1)');
+    aboutPopup.style('max-width', '80%');
+    aboutPopup.style('z-index', '100');
+
+    // Show popup on mouse hover
+    aboutBtn.mouseOver(() => {
+        aboutPopup.style('display', 'block');
+    });
+
+    // Hide popup when mouse leaves
+    aboutBtn.mouseOut(() => {
+        aboutPopup.style('display', 'none');
+    });
   createCanvas(windowWidth, windowHeight);
   //canvas.parent("container");
   gridSize = createVector(floor(width / CELL_SIZE), floor(height / CELL_SIZE));
@@ -128,7 +153,7 @@ function setup() {
 
   // Show the initial alert
   showInstructionsAlert();
-
+    
 }
 
 function draw() {
@@ -202,18 +227,26 @@ function displayGrid() {
 
       if (grid[i][j] === 1) {
         
-        // Assign different colors based on the stage of life
-        let stage = countNeighbors(i, j);
-        if (stage < 2) {
-          fill(255, 102, 94);   // white for stage 0
-        } else if (stage < 4) {
-          fill(98, 194, 177);   // Green for stage 1
-        } else {
-          fill(0, 120, 191);   // Blue for stage 2 and above
-        }
+        // // Assign different colors based on the stage of life
+        // let stage = countNeighbors(i, j);
+        // if (stage < 2) {
+        //   fill(255, 255, 94);   // white for stage 0
+        // } else if (stage < 4) {
+        //   fill(98, 194, 177);   // Green for stage 1
+        // } else {
+        //   fill(0, 120, 191);   // Blue for stage 2 and above
+        // }
 
+        let distanceToNose = dist(noseX, noseY, x, y);
+        let r = (sin(distanceToNose * 0.01) + 1) * 127.5; // Red
+        let g = (cos(distanceToNose * 0.01) + 1) * 127.5; // Green
+        let b = (sin(distanceToNose * 0.4) + 1) * 127.5; // Blue
+
+        fill(b, 150, r); // Use calculated colors
         rect(x, y, CELL_SIZE, CELL_SIZE);
-        noStroke();
+
+        // rect(x, y, CELL_SIZE, CELL_SIZE);
+        // noStroke();
       }
     }
   }
@@ -527,7 +560,7 @@ function drawGenerationCountOnCanvas() {
 
   // Detect cursor hover over the right corner
 function detectCursorHover() {
-    if (mouseX >= width - 30 && mouseY <= 30) {
+    if (mouseX >= width - 60 && mouseY <= 40) {
       instructionsDiv.show(); // Show instructions when cursor hovers over the right corner
     } else {
       instructionsDiv.hide(); // Hide instructions otherwise
@@ -581,34 +614,3 @@ function showInstructionsAlert() {
     alertShown = true;
     }
 }
-
-// function drawCellAt(x, y) {
-//     // Get the adjusted mouse position based on zoom and offset
-//     let adjustedX = (x - offset.x) / zoomFactor;
-//     let adjustedY = (y - offset.y) / zoomFactor;
-  
-//     // Get the cell index based on the adjusted mouse position
-//     let i = floor(adjustedX / CELL_SIZE);
-//     let j = floor(adjustedY / CELL_SIZE);
-  
-//     // Toggle the cell state
-//     if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
-//       grid[i][j] = 1;
-//       history.push(createVector(i, j));  // Add cell position to history
-//     }
-//   }
-  
-
-// function mousePressed() {
-//     isDrawing = true;
-//     drawCellAt(mouseX, mouseY);
-//   }
-  
-//   function mouseDragged() {
-//     drawCellAt(mouseX, mouseY);
-//   }
-  
-//   function mouseReleased() {
-//     isDrawing = false;
-//   }
-  

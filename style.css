@@ -1,5 +1,5 @@
 html{
-  overflow: auto;
+  overflow: hidden;
 }
 
 body {
@@ -79,26 +79,8 @@ canvas {
 }
 
 
-#save-button {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  position: absolute;
-  top: 10px; /* Adjust the top position as needed */
-  left: 10px; /* Adjust the left position as needed */
-  background: white;
-  color: #100e0e; /* Text color */
-  cursor: pointer;
-}
 
-#help {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  position: absolute;
-  top: 10px; /* Adjust the top position as needed */
-  right: 10px;
-  background: white;
-  color: rgb(15, 13, 13); /* Text color */
-  cursor:help;
-  
-}
+
 
 .title {
   font-size: 24px;
@@ -168,20 +150,76 @@ canvas {
   margin: 10px 0;
 }
 
-.styled-button {
+
+.button-style {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   background: white;
   color: #100e0e;
   cursor: pointer;
-  text-decoration: none;
+  padding: 2px;
   position: absolute;
+  text-decoration: none;
+  border: 1px solid black; /* Optional: Add a border */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.button-style:hover {
+  background-color: #3c3a3a; /* Change background color on hover */
+  color: #f0f0f0; /* Change text color on hover */
+  border-color: #100e0e; /* Change border color on hover */
+}
+
+
+#generation-counter {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  position: absolute;
+  top: 30px; /* Adjust this value based on the height of your button */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f0f0f0;
+  
+  padding: 10px;
+  text-align: center;
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000; /* Black text outline */
+}
+
+
+
+#save-button {
+  top: 10px;
+  left: 10px;
+  cursor:cell;
+}
+
+#help {
+  top: 10px;
+  right: 10px;
+  cursor: help;
+  padding-left:10px;
+  padding-right:10px;
 
 }
 
+#about {
+  bottom: 10px;
+  right: 10px;
+  cursor:context-menu;
+  padding-left:10px;
+  padding-right:10px;
+
+
+}
 
 #hub-link {
   top: 10px;
   left: 50%;
-  transform: translateX(-50%); /* Centers the button */
-}
+  transform: translateX(-50%);
+  font-size: medium;
+  padding-left:10px;
+  padding-right:10px;
 
+}
