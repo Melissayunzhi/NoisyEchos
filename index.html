@@ -22,22 +22,30 @@
     <video id="video" width="640" height="360" autoplay></video> -->
 
     <!-- you can add style="display: none" to the video tag -->
-    <button id="save-button" class="button-style" onclick="saveCanvasImage()">Save Canvas Image</button>
+    <button id="save-button" class="button-style"  onclick="saveCanvasImage()" title="Click to save the current image/ It will save 3 random generations from the moment you click the button on to your computer/phone. Don't forget to upload them to the hub.">Save Canvas Image</button>
     <button id="help" class="button-style">help</button>
-    <a id="hub-link" href="https://www.are.na/melissa-li-9aocewfqlfo/noisy-messages" class="button-style" target="_blank">Go to Noisy Hub</a>
+    <a id="hub-link" href="https://www.are.na/melissa-li-9aocewfqlfo/noisy-messages" class="button-style" title="upload your images here :)" target="_blank">Go to Noisy Hub</a>
     <div id="generation-counter">generations: <span id="generation-count">0</span></div>
+
+    <button id="social-button" class="button-style">social</button>
+
+    <div id="social-popup" style="display: none;">
+      <button id="close-popup" class="button-style">X</button>
+<br>
+  <p><a href="https://instagram.com/melissayunzhi" target="_blank">Instagram @melissayunzhi</a></p>
+</div>
 
       <button id="about" class="button-style">about</button>
 
       <div id="aboutPopup" style="display: none;">
         This interactive website brings to life Conway's cellular automation "The Game of Life". <br>
         The grid-based game evolves each cell based on its neighbours, representing the unpredictability of life's interactions. My twist on this concept involves integrating PoseNet, a ready-to-use machine-learning model that allows users to interact with the grid using their body movements. <br>
-        As you move in front of your webcam, you directly influence the cells on the screen, creating a dynamic interaction between physical motion and digital change.<br>
+        As you move in front of your webcam, you directly influence the cells on the screen, creating a dynamic interaction between physical motion and digital change.<br> <br>
+        Once you click save, you will only be able to save the next three random generations of your original image on to your computer. Upload them to the Arena Hub and share your messages with each other. <br>
  
 <br>
         This project is more than just an engaging visual experience. <br>
         It's a reflection on digital communication, exploring how our messages can be altered and lost even in a world of instant connectivity. <br>
-        It's a metaphor for the 'noise' in our digital conversations and how our intentions can evolve unpredictably, much like the cells in the Game of Life.<br>
         I invite users to engage with this platform to enjoy the visual interplay and ponder the complexities of communication in our digital era.    </div>
     <script src="script.js" ></script>
 </div>

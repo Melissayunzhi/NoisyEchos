@@ -2,13 +2,12 @@ html{
   overflow: hidden;
 }
 
-body {
+body,p,a {
 
   font-family:sans-serif;
 
   overflow: auto; /* or overflow: scroll; */
 	margin: 0;
-	padding: 0;
 	border: 0;
 	font-size: 100%;
 	font: inherit;
@@ -211,7 +210,6 @@ canvas {
   padding-left:10px;
   padding-right:10px;
 
-
 }
 
 #hub-link {
@@ -222,4 +220,44 @@ canvas {
   padding-left:10px;
   padding-right:10px;
 
+}
+
+#social-button {
+  bottom: 10px;
+  left: 10px;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+#social-popup {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  opacity: 0.8; /* Set transparency (adjust as needed) */
+
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 100; /* Ensure it's above other elements */
+}
+
+#close-popup {
+top:10%;
+left:10%;
+
+}
+
+a {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+
+  color: #100e0e;
+  overflow: hidden;
+}
+
+a:hover {
+color: #a90c0c;
 }

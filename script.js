@@ -153,7 +153,22 @@ function setup() {
 
   // Show the initial alert
   showInstructionsAlert();
-    
+// Get the social button and popup elements
+let socialButton = document.getElementById('social-button');
+let socialPopup = document.getElementById('social-popup');
+let closePopupButton = document.getElementById('close-popup');
+
+// Toggle the popup on click
+socialButton.addEventListener('click', function() {
+  socialPopup.style.display = socialPopup.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close the popup when the close button is clicked
+closePopupButton.addEventListener('click', function() {
+  socialPopup.style.display = 'none';
+});
+
+
 }
 
 function draw() {
