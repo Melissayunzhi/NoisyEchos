@@ -1,28 +1,21 @@
-// const express = require('express');
-// const fs = require('fs');
-// const path = require('path');
-// const app = express();
+const accessToken = '-6FuZmL5yUVgXnOCik_7D8s8QLRsXbgppp18GsJMadU'; // Replace with your access token
+const channelSlug = 'your-channel-slug'; // Replace with your channel's slug
+const imageUrl = 'http://example.com/image.jpg'; // URL of the image you want to upload
 
-// app.use(express.static('public')); // Serve static files from 'public' directory
-// app.use(express.json({ limit: '50mb' })); // for parsing application/json
-
-// // Endpoint to handle image upload
-// app.post('/upload', (req, res) => {
-//     const imageData = req.body.imageData;
-//     const base64Data = imageData.replace(/^data:image\/png;base64,/, "");
-//     const filename = 'image_' + Date.now() + '.png';
-
-//     fs.writeFile(path.join(__dirname, 'uploads', filename), base64Data, 'base64', (err) => {
-//         if (err) {
-//             console.error(err);
-//             return res.sendStatus(500); // Internal Server Error
-//         }
-//         res.json({ imageUrl: '/uploads/' + filename });
-//     });
-// });
-
-// // Start server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-// });
+fetch(`http://api.are.na/v2/channels/${channelSlug}/blocks`, {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    source: imageUrl
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+});

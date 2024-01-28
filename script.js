@@ -427,23 +427,23 @@ function drawKeypoints() {
         followRules = true; 
         history = [];
         
-        if (keypoint.part === 'leftWrist' || keypoint.part === 'rightWrist') {
-            wristX = keypoint.position.x;
-            wristY = keypoint.position.y;
+        // if (keypoint.part === 'leftWrist' || keypoint.part === 'rightWrist') {
+        //     wristX = keypoint.position.x;
+        //     wristY = keypoint.position.y;
           
-            if (isDrawing) {
-              // Get the cell index based on the wrist position
-              let i = floor(wristX / CELL_SIZE);
-              let j = floor(wristY / CELL_SIZE);
+        //     if (isDrawing) {
+        //       // Get the cell index based on the wrist position
+        //       let i = floor(wristX / CELL_SIZE);
+        //       let j = floor(wristY / CELL_SIZE);
           
-              // Toggle the cell state
-              if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
-                grid[i][j] = 1;
-                history.push(createVector(i, j)); // Add cell position to history
-              }
+        //       // Toggle the cell state
+        //       if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
+        //         grid[i][j] = 1;
+        //         history.push(createVector(i, j)); // Add cell position to history
+        //       }
 
-            }
-          }
+        //     }
+        //   }
 
         if (j == 0) {
           noseX = keypoint.position.x;
@@ -507,7 +507,13 @@ function gotPoses(results) {
 
 
 function modelReady() {
-  select('#status').html('model Loaded');
+  let generationCounter = document.getElementById('generation-count');
+  console.log(generationCounter); // Check if this logs null
+  if (generationCounter) {
+      generationCounter.innerText = generationCount;
+  } else {
+      console.error("Element with ID 'generation-count' not found.");
+  }
 }
 
 

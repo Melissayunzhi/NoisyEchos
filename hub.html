@@ -2,14 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noisy Screenshots Hub</title>
-    <!-- Add link to your CSS file if needed -->
+    <title>Noisy Messages Channel</title>
+    <link rel="icon" href="favicon_io/favicon.ico" />
+
+    <style>
+
+        /* ... existing main CSS styles ... */
+
+        /* New styles for the content area */
+        #content-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* three columns */
+            gap: 20px; /* space between images */
+            margin: 20px; /* adjust as needed */
+            padding: 0;
+        }
+
+        .item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+
+            background-color: #fff; /* background color for each item */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+            border-radius: 3px; /* rounded corners */
+            overflow: hidden; /* ensures content fits within borders */
+        }
+
+        .item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover; /* cover the container, might crop the image */
+        }
+
+        .item h3, p {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 2px;
+            margin: 0;
+            text-align: left;
+            color: #333; /* text color */
+        }
+
+        #load-more {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 10px 20px;
+            margin: 20px auto;
+            display: block;
+            background-color: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #load-more:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #content-area {
+                grid-template-columns: repeat(2, 1fr); /* two columns for smaller screens */
+            }
+        }
+
+        @media (max-width: 400px) {
+            #content-area {
+                grid-template-columns: 1fr; /* single column for very small screens */
+            }
+        }
+        #content-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Three columns */
+            grid-gap: 59px; /* Spacing between grid items */
+            margin-bottom: 20px;
+        }
+        .item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* three columns */
+  gap: 10px; /* space between images */
+  margin: 20px; /* adjust as needed */
+}
+
+/* Style for each image */
+.image-grid img {
+  width: 100%; /* make images expand to fill their container */
+  height: auto; /* maintain aspect ratio */
+  object-fit: cover; /* cover the container, might crop the image */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .image-grid {
+    grid-template-columns: repeat(2, 1fr); /* two columns for smaller screens */
+  }
+}
+
+@media (max-width: 400px) {
+  .image-grid {
+    grid-template-columns: 1fr; /* single column for very small screens */
+  }
+}
+#gameOfLifeCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Make sure it's in the background */
+}
+/* Header Styles */
+h1 {
+    text-align: center;
+    padding: 10px 0;
+    color:#f0f0f0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-shadow: -1.4px -1.4px 0 #000, 1.4px -1.4px 0 #000, -1.4px 1.4px 0 #000, 1.4px 1.4px 0 #000; /* Faux border effect */
+
+}
+
+#page-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+/* Hover effect for grid items */
+.item:hover {
+    transform: scale(1.25); /* Slightly enlarge items on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+    z-index: 10; /* Ensure the item is above others during hover */
+}
+    </style>
+    
 </head>
 <body>
-    <h1>Noisy Screenshots Hub</h1>
-    <!-- Your content goes here -->
+    <canvas id="gameOfLifeCanvas"></canvas>
+        <h1>Noisy Messages</h1>
+    <div id="content-area"></div>
+    <button id="load-more">Load More</button>
+
+    <script>
+        const contentArea = document.getElementById('content-area');
+        const loadMoreButton = document.getElementById('load-more');
+        let currentPage = 1;
+        const perPage = 50;
+
+        function displayChannelContents(data) {
+            data.contents.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('item');
+
+                if (item.image && item.image.display) {
+                    const img = document.createElement('img');
+                    img.src = item.image.display.url;
+                    img.alt = item.title || 'Arena Image';
+                    itemDiv.appendChild(img);
+                }
+
+                if (item.title) {
+                    const title = document.createElement('p');
+                    title.textContent = item.title;
+                    itemDiv.appendChild(title);
+                }
+
+                contentArea.appendChild(itemDiv);
+            });
+        }
+
+        function loadContent(page) {
+            fetch(`https://api.are.na/v2/channels/noisy-messages/contents?direction=desc&sort=position&page=${page}&per=${perPage}`)
+                .then(response => response.json())
+                .then(data => displayChannelContents(data))
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        loadMoreButton.addEventListener('click', () => {
+            loadContent(currentPage);
+            currentPage++;
+        });
+
+        // Load initial content
+        loadContent(0);
+    </script>
+     <script src="game-of-life.js"></script> <!-- Add this line -->
+
 </body>
-
-
 </html>
