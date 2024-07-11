@@ -58,9 +58,9 @@ function setup() {
     }
 
     initializeGrid(); // Clear the grid
-    isDrawing = false;
+    isDrawing = true; // Allow drawing by default
     followRules = false;
-    isPaused = true;
+    isPaused = true; // Simulation is paused by default
     timer = millis();
     showGrid = false;
 
@@ -85,7 +85,7 @@ function setup() {
     instructionsDiv.position(width - 220, 20);
     instructionsDiv.html(
         "<strong>Instructions:</strong><br>" +
-        "Press <strong>'Spacebar'</strong> to pause/resume the simulation.<br>" +
+        "Press <strong>'Spacebar'</strong> to start/stop the simulation.<br>" +
         "Press <strong>'r'</strong> to clear the grid.<br>" +
         "Press <strong>'g'</strong> to toggle grid visibility.<br>"
     );
@@ -203,16 +203,8 @@ function keyPressed() {
         history = []; // Clear the history
         generationCount = 0; // Reset generation count
     } else if (key === ' ') {
-        videoPaused = !videoPaused;
-        if (videoPaused) {
-            video.play(); // Resume the video
-        } else {
-            video.pause(); // Pause the video
-        }
-
-        isPaused = !isPaused;
-        followRules = !followRules; // Ensure the rules follow when paused/resumed
-        generationCount = 0; // Reset generation count
+        followRules = !followRules; // Toggle the rule following when space is pressed
+        isPaused = !isPaused; // Toggle the simulation pause state
     } else if (key === 'u' || key === 'U') {
         if (history.length > 0) {
             let cellPos = history.pop();
@@ -364,7 +356,7 @@ function detectCursorHover() {
 function showInstructionsAlert() {
     if (!alertShown) {
         alert("Welcome to the semiotics automata! Here are the instructions:\n\n" +
-            "Press 'Spacebar' to pause/resume the simulation.\n" +
+            "Press 'Spacebar' to start/stop the simulation.\n" +
             "Press 'r' to clear the grid.\n" +
             "Press 'g' to toggle grid visibility.\n\n" +
             "Remember that more help is available in the top right corner.");
