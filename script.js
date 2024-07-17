@@ -84,10 +84,14 @@ function setup() {
     instructionsDiv.style('padding', '10px');
     instructionsDiv.position(width - 220, 20);
     instructionsDiv.html(
-        "<strong>Instructions:</strong><br>" +
-        "Press <strong>'Spacebar'</strong> to start/stop the simulation.<br>" +
-        "Press <strong>'r'</strong> to clear the grid.<br>" +
-        "Press <strong>'g'</strong> to toggle grid visibility.<br>"
+        "<strong>How to Interact:</strong><br>" +
+        "<ul>" +
+        "<li>Draw or write with your nose.</li>" +
+        "<li>Press <strong>ENTER</strong> to send.</li>" +
+        "<li>Press <strong>Spacebar</strong> to stop or pause the simulation.</li>" +
+        "<li>Press <strong>R</strong> to reset.</li>" +
+        "<li>Press <strong>G</strong> to toggle grid visibility.</li>" +
+        "</ul>"
     );
 
     // Show the initial alert
@@ -106,6 +110,33 @@ function setup() {
     // Close the popup when the close button is clicked
     closePopupButton.addEventListener('click', function() {
         socialPopup.style.display = 'none';
+    });
+
+    // Select the about button and popup div
+    let aboutBtn = select('#about');
+    let aboutPopup = select('#aboutPopup');
+
+    // Apply styling to the popup
+    aboutPopup.style('font-family', "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif");
+    aboutPopup.style('background-color', 'rgba(255, 255, 255, 0.8)');
+    aboutPopup.style('padding', '10px');
+    aboutPopup.style('text-align', 'center');
+    aboutPopup.style('border-radius', '8px');
+    aboutPopup.style('position', 'fixed');
+    aboutPopup.style('bottom', '50%');
+    aboutPopup.style('right', '50%');
+    aboutPopup.style('transform', 'translate(50%, 50%)');
+    aboutPopup.style('display', 'none');
+    aboutPopup.style('z-index', '100');
+
+    // Show popup on mouse hover
+    aboutBtn.mouseOver(() => {
+        aboutPopup.style('display', 'block');
+    });
+
+    // Hide popup when mouse leaves
+    aboutBtn.mouseOut(() => {
+        aboutPopup.style('display', 'none');
     });
 }
 
@@ -202,20 +233,13 @@ function keyPressed() {
         followRules = false; // Stop following the rules of Game of Life
         history = []; // Clear the history
         generationCount = 0; // Reset generation count
-    } else if (key === ' ') {
-        followRules = !followRules; // Toggle the rule following when space is pressed
-        isPaused = !isPaused; // Toggle the simulation pause state
-    } else if (key === 'u' || key === 'U') {
-        if (history.length > 0) {
-            let cellPos = history.pop();
-            let i = floor(cellPos.x);
-            let j = floor(cellPos.y);
-            grid[i][j] = 0;
-        }
-    } else if (key === '+') {
-        zoomFactor *= 1.2; // Zoom in
-    } else if (key === '-') {
-        zoomFactor *= 0.8; // Zoom out
+    } else if (key === ' ' || key === 'Enter' ) {
+        isPaused = !isPaused; // Toggle pause state
+        followRules = !followRules; // Toggle following rules
+        generationCount = 0; // Reset generation count
+        saveCanvasImage(); // This calls your existing function to save the image
+
+
     } else if (key === 'g' || key === 'G') {
         showGrid = !showGrid; // Toggle grid visibility
     }
@@ -355,11 +379,14 @@ function detectCursorHover() {
 
 function showInstructionsAlert() {
     if (!alertShown) {
-        alert("Welcome to the semiotics automata! Here are the instructions:\n\n" +
-            "Press 'Spacebar' to start/stop the simulation.\n" +
-            "Press 'r' to clear the grid.\n" +
-            "Press 'g' to toggle grid visibility.\n\n" +
-            "Remember that more help is available in the top right corner.");
+        alert("Please draw or write your message :) \n\n" +
+            "Draw or write with your nose. \n" +
+            "Hit ENTER to send. \n" +
+            "Space bar to stop or pause the simulation.\n" +
+            "R to Reset.\n" +
+            "G to toggle grid visibility.\n\n" +
+
+            "Remember that more help is available in the top right corner! ");
         alertShown = true;
     }
 }
