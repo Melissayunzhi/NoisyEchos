@@ -151,21 +151,13 @@ function draw() {
     scale(-1, 1);
     image(video, 0, 0, width, height);
 
-    let nosePositions = [];
-
-    // Draw only the nose point if it exists and update the cellular automata grid
-    for (let i = 0; i < poses.length; i++) {
-        let pose = poses[i];
+    // Only use the first detected nose
+    if (poses.length > 0) {
+        let pose = poses[0];
         let nose = pose.keypoints.find(keypoint => keypoint.name === 'nose');
         if (nose) {
-            // fill(0, 255, 0);
-            // noStroke();
-            // circle(nose.x, nose.y, 10); // Commented out the circle
-
             let noseX = nose.x;
             let noseY = nose.y;
-
-            nosePositions.push({ x: noseX, y: noseY });
 
             if (isDrawing || !isPaused) {
                 let i = floor(noseX / CELL_SIZE);
@@ -180,7 +172,7 @@ function draw() {
         }
     }
 
-    displayGrid(nosePositions);
+    displayGrid();
 
     // Check if the delay has passed and the simulation is not paused
     if (followRules && !isPaused && millis() - timer > DELAY) {
@@ -207,7 +199,7 @@ function generateColor(noseX, noseY, x, y) {
     return [b, 150, r];
 }
 
-function displayGrid(nosePositions) {
+function displayGrid() {
     if (showGrid) {
         stroke(255, 100);
         for (let i = 0; i <= width; i += CELL_SIZE) {
@@ -227,13 +219,10 @@ function displayGrid(nosePositions) {
             let y = j * CELL_SIZE;
 
             if (grid[i][j] === 1) {
-                if (isPaused) {
-                    let closestNose = nosePositions.reduce((closest, nose) => {
-                        let distToNose = dist(nose.x, nose.y, x, y);
-                        return distToNose < closest.distance ? { nose, distance: distToNose } : closest;
-                    }, { distance: Infinity });
-
-                    let color = generateColor(closestNose.nose.x, closestNose.nose.y, x, y);
+                if (isPaused && poses.length > 0 && poses[0].keypoints.find(keypoint => keypoint.name === 'nose')) {
+                    let noseX = poses[0].keypoints.find(keypoint => keypoint.name === 'nose').x;
+                    let noseY = poses[0].keypoints.find(keypoint => keypoint.name === 'nose').y;
+                    let color = generateColor(noseX, noseY, x, y);
                     fill(color[0], color[1], color[2]); // Use dynamic colors
                     colorGrid[i][j] = color; // Update color in the grid
                 } else {
@@ -254,11 +243,7 @@ function keyPressed() {
     } else if (key === 'Enter') {
         isPaused = false; // Start the simulation
         followRules = true; // Follow the rules
-        if (isPaused) {
-            video.play(); // Resume the video
-        } else {
-            video.pause(); // Pause the video
-        }        
+        video.pause(); // Pause the video
         saveCanvasImage(); // This calls your existing function to save the image
     } else if (key === ' ') {
         isPaused = !isPaused; // Toggle pause state
