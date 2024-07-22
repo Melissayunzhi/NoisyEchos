@@ -1,6 +1,7 @@
 let CELL_SIZE = 15; // Size of each cell
 let gridSize; // Number of columns and rows in the grid
 let grid; // 2D array to store the grid
+let colorGrid; // 2D array to store the colors of the cells
 let isDrawing = false; // Flag to indicate whether the mouse is being dragged
 let generationCount = 0; // Generation count
 let saveNextGenerations = false;
@@ -27,9 +28,6 @@ let video;
 let bodyPose;
 let poses = [];
 
-let noseX;
-let noseY;
-
 let currentRule = 0;
 
 // This will be called every 10 seconds
@@ -53,8 +51,10 @@ function setup() {
     gridSize = createVector(floor(width / CELL_SIZE), floor(height / CELL_SIZE));
 
     grid = new Array(gridSize.x);
+    colorGrid = new Array(gridSize.x);
     for (let i = 0; i < gridSize.x; i++) {
-        grid[i] = new Array(gridSize.y);
+        grid[i] = new Array(gridSize.y).fill(0);
+        colorGrid[i] = new Array(gridSize.y).fill([0, 0, 0]);
     }
 
     initializeGrid(); // Clear the grid
@@ -151,6 +151,8 @@ function draw() {
     scale(-1, 1);
     image(video, 0, 0, width, height);
 
+    let nosePositions = [];
+
     // Draw only the nose point if it exists and update the cellular automata grid
     for (let i = 0; i < poses.length; i++) {
         let pose = poses[i];
@@ -160,8 +162,10 @@ function draw() {
             // noStroke();
             // circle(nose.x, nose.y, 10); // Commented out the circle
 
-            noseX = nose.x;
-            noseY = nose.y;
+            let noseX = nose.x;
+            let noseY = nose.y;
+
+            nosePositions.push({ x: noseX, y: noseY });
 
             if (isDrawing || !isPaused) {
                 let i = floor(noseX / CELL_SIZE);
@@ -169,13 +173,14 @@ function draw() {
 
                 if (i >= 0 && i < gridSize.x && j >= 0 && j < gridSize.y) {
                     grid[i][j] = 1;
+                    colorGrid[i][j] = generateColor(noseX, noseY, i * CELL_SIZE, j * CELL_SIZE); // Store color when drawing
                     history.push(createVector(i, j)); // Add cell position to history
                 }
             }
         }
     }
 
-    displayGrid();
+    displayGrid(nosePositions);
 
     // Check if the delay has passed and the simulation is not paused
     if (followRules && !isPaused && millis() - timer > DELAY) {
@@ -194,7 +199,15 @@ function draw() {
     }
 }
 
-function displayGrid() {
+function generateColor(noseX, noseY, x, y) {
+    let distanceToNose = dist(noseX, noseY, x, y);
+    let r = (sin(distanceToNose * 0.01) + 1) * 127.5; // Red
+    let g = (cos(distanceToNose * 0.01) + 1) * 127.5; // Green
+    let b = (sin(distanceToNose * 0.4) + 1) * 127.5; // Blue
+    return [b, 150, r];
+}
+
+function displayGrid(nosePositions) {
     if (showGrid) {
         stroke(255, 100);
         for (let i = 0; i <= width; i += CELL_SIZE) {
@@ -205,7 +218,6 @@ function displayGrid() {
         }
     }
 
-    fill(255, 128); // 128 specifies the alpha (transparency)
     stroke(255, 128);
 
     // Display the cells
@@ -215,12 +227,18 @@ function displayGrid() {
             let y = j * CELL_SIZE;
 
             if (grid[i][j] === 1) {
-                let distanceToNose = dist(noseX, noseY, x, y);
-                let r = (sin(distanceToNose * 0.01) + 1) * 127.5; // Red
-                let g = (cos(distanceToNose * 0.01) + 1) * 127.5; // Green
-                let b = (sin(distanceToNose * 0.4) + 1) * 127.5; // Blue
+                if (isPaused) {
+                    let closestNose = nosePositions.reduce((closest, nose) => {
+                        let distToNose = dist(nose.x, nose.y, x, y);
+                        return distToNose < closest.distance ? { nose, distance: distToNose } : closest;
+                    }, { distance: Infinity });
 
-                fill(b, 150, r); // Use calculated colors
+                    let color = generateColor(closestNose.nose.x, closestNose.nose.y, x, y);
+                    fill(color[0], color[1], color[2]); // Use dynamic colors
+                    colorGrid[i][j] = color; // Update color in the grid
+                } else {
+                    fill(colorGrid[i][j][0], colorGrid[i][j][1], colorGrid[i][j][2]); // Use stored colors
+                }
                 rect(x, y, CELL_SIZE, CELL_SIZE);
             }
         }
@@ -228,18 +246,27 @@ function displayGrid() {
 }
 
 function keyPressed() {
-    if (key === 'r') {
+    if (key === 'r' || key === 'R') {
         initializeGrid(); // Clear the grid
         followRules = false; // Stop following the rules of Game of Life
         history = []; // Clear the history
         generationCount = 0; // Reset generation count
-    } else if (key === ' ' || key === 'Enter' ) {
-        isPaused = !isPaused; // Toggle pause state
-        followRules = !followRules; // Toggle following rules
-        generationCount = 0; // Reset generation count
+    } else if (key === 'Enter') {
+        isPaused = false; // Start the simulation
+        followRules = true; // Follow the rules
+        if (isPaused) {
+            video.play(); // Resume the video
+        } else {
+            video.pause(); // Pause the video
+        }        
         saveCanvasImage(); // This calls your existing function to save the image
-
-
+    } else if (key === ' ') {
+        isPaused = !isPaused; // Toggle pause state
+        if (isPaused) {
+            video.play(); // Resume the video
+        } else {
+            video.pause(); // Pause the video
+        }
     } else if (key === 'g' || key === 'G') {
         showGrid = !showGrid; // Toggle grid visibility
     }
@@ -247,8 +274,10 @@ function keyPressed() {
 
 function nextGeneration() {
     let nextGrid = new Array(floor(gridSize.x));
+    let nextColorGrid = new Array(floor(gridSize.x));
     for (let i = 0; i < floor(gridSize.x); i++) {
-        nextGrid[i] = new Array(floor(gridSize.y));
+        nextGrid[i] = new Array(floor(gridSize.y)).fill(0);
+        nextColorGrid[i] = new Array(floor(gridSize.y)).fill([0, 0, 0]);
     }
 
     for (let i = 0; i < gridSize.x; i++) {
@@ -260,18 +289,22 @@ function nextGeneration() {
                 case 0: // Game of Life Rule
                     if (state === 0 && neighbors === 3) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
                         nextGrid[i][j] = 0;
                     } else {
                         nextGrid[i][j] = state;
+                        nextColorGrid[i][j] = colorGrid[i][j]; // Retain current color
                     }
                     break;
 
                 case 1: // Custom Rule 1
                     if (state === 0 && neighbors == 2) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else if (state === 1 && neighbors == 3) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else {
                         nextGrid[i][j] = 0;
                     }
@@ -280,8 +313,10 @@ function nextGeneration() {
                 case 2: // Higherlife Rule
                     if (state === 0 && neighbors == 3) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else if (state === 1 && (neighbors == 2 || neighbors == 3)) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else {
                         nextGrid[i][j] = 0;
                     }
@@ -290,10 +325,12 @@ function nextGeneration() {
                 case 3: // Custom Rule 2
                     if (state === 0 && (neighbors == 3 || neighbors == 6)) {
                         nextGrid[i][j] = 1;
+                        nextColorGrid[i][j] = averageNeighborColor(i, j); // Set color based on neighbors
                     } else if (state === 1 && (neighbors < 2 || neighbors > 4)) {
                         nextGrid[i][j] = 0;
                     } else {
                         nextGrid[i][j] = state;
+                        nextColorGrid[i][j] = colorGrid[i][j]; // Retain current color
                     }
                     break;
             }
@@ -301,12 +338,38 @@ function nextGeneration() {
     }
 
     grid = nextGrid;
+    colorGrid = nextColorGrid;
 
     generationCount++; // Increment the generation count
     document.getElementById('generation-count').innerText = generationCount; // Update HTML
 
     if (generationCount >= Math.max(...generationsToSave)) {
         saveNextGenerations = false; // Stop saving process after 10 generations
+    }
+}
+
+function averageNeighborColor(x, y) {
+    let neighbors = [];
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i === 0 && j === 0) continue;
+            let col = (x + i + gridSize.x) % gridSize.x;
+            let row = (y + j + gridSize.y) % gridSize.y;
+            if (grid[col][row] === 1) {
+                neighbors.push(colorGrid[col][row]);
+            }
+        }
+    }
+    if (neighbors.length > 0) {
+        let avgColor = neighbors.reduce((acc, col) => {
+            acc[0] += col[0];
+            acc[1] += col[1];
+            acc[2] += col[2];
+            return acc;
+        }, [0, 0, 0]).map(sum => sum / neighbors.length);
+        return avgColor;
+    } else {
+        return [255, 255, 255]; // Default to white if no neighbors
     }
 }
 
@@ -329,6 +392,7 @@ function initializeGrid() {
     for (let i = 0; i < gridSize.x; i++) {
         for (let j = 0; j < gridSize.y; j++) {
             grid[i][j] = 0; // Set all cells to 0 (clear the grid)
+            colorGrid[i][j] = [0, 0, 0]; // Initialize the color grid
         }
     }
 }
@@ -385,7 +449,6 @@ function showInstructionsAlert() {
             "Space bar to stop or pause the simulation.\n" +
             "R to Reset.\n" +
             "G to toggle grid visibility.\n\n" +
-
             "Remember that more help is available in the top right corner! ");
         alertShown = true;
     }
@@ -393,5 +456,5 @@ function showInstructionsAlert() {
 
 function saveAndOpenArena() {
     saveCanvasImage(); // This calls your existing function to save the image
-    window.open('https://www.are.na/melissa-yunzhi/noisy-messages', '_blank'); // Opens Arena page in a new tab
+    //window.open('https://www.are.na/melissa-yunzhi/noisy-messages', '_blank'); // Opens Arena page in a new tab
 }
