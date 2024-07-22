@@ -151,15 +151,17 @@ function draw() {
     scale(-1, 1);
     image(video, 0, 0, width, height);
 
-    // Only use the first detected nose
+    let noseX, noseY;
+
+    // Draw only the nose point if it exists and update the cellular automata grid
     if (poses.length > 0) {
         let pose = poses[0];
         let nose = pose.keypoints.find(keypoint => keypoint.name === 'nose');
         if (nose) {
-            let noseX = nose.x;
-            let noseY = nose.y;
+            noseX = nose.x;
+            noseY = nose.y;
 
-            if (isDrawing || !isPaused) {
+            if (isDrawing && !videoPaused) {
                 let i = floor(noseX / CELL_SIZE);
                 let j = floor(noseY / CELL_SIZE);
 
@@ -172,7 +174,7 @@ function draw() {
         }
     }
 
-    displayGrid();
+    displayGrid(noseX, noseY);
 
     // Check if the delay has passed and the simulation is not paused
     if (followRules && !isPaused && millis() - timer > DELAY) {
@@ -199,7 +201,7 @@ function generateColor(noseX, noseY, x, y) {
     return [b, 150, r];
 }
 
-function displayGrid() {
+function displayGrid(noseX, noseY) {
     if (showGrid) {
         stroke(255, 100);
         for (let i = 0; i <= width; i += CELL_SIZE) {
@@ -219,14 +221,13 @@ function displayGrid() {
             let y = j * CELL_SIZE;
 
             if (grid[i][j] === 1) {
-                if (isPaused && poses.length > 0 && poses[0].keypoints.find(keypoint => keypoint.name === 'nose')) {
-                    let noseX = poses[0].keypoints.find(keypoint => keypoint.name === 'nose').x;
-                    let noseY = poses[0].keypoints.find(keypoint => keypoint.name === 'nose').y;
+                if (videoPaused) {
+                    let color = colorGrid[i][j];
+                    fill(color[0], color[1], color[2]); // Use stored colors
+                } else {
                     let color = generateColor(noseX, noseY, x, y);
                     fill(color[0], color[1], color[2]); // Use dynamic colors
                     colorGrid[i][j] = color; // Update color in the grid
-                } else {
-                    fill(colorGrid[i][j][0], colorGrid[i][j][1], colorGrid[i][j][2]); // Use stored colors
                 }
                 rect(x, y, CELL_SIZE, CELL_SIZE);
             }
@@ -244,13 +245,16 @@ function keyPressed() {
         isPaused = false; // Start the simulation
         followRules = true; // Follow the rules
         video.pause(); // Pause the video
+        videoPaused = true;
         saveCanvasImage(); // This calls your existing function to save the image
     } else if (key === ' ') {
         isPaused = !isPaused; // Toggle pause state
         if (isPaused) {
             video.play(); // Resume the video
+            videoPaused = false;
         } else {
             video.pause(); // Pause the video
+            videoPaused = true;
         }
     } else if (key === 'g' || key === 'G') {
         showGrid = !showGrid; // Toggle grid visibility
