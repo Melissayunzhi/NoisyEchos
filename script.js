@@ -240,14 +240,18 @@ function keyPressed() {
         initializeGrid(); // Clear the grid
         followRules = false; // Stop following the rules of Game of Life
         history = []; // Clear the history
+        videoPaused = false;
+        isPaused = true; // Start the simulation
+        video.play(); // Resume the video
+
         generationCount = 0; // Reset generation count
-    } else if (key === 'Enter') {
-        isPaused = false; // Start the simulation
-        followRules = true; // Follow the rules
-        video.pause(); // Pause the video
-        videoPaused = true;
-        saveCanvasImage(); // This calls your existing function to save the image
-    } else if (key === ' ') {
+    // } else if (key === 'Enter' ) {
+    //     isPaused = false; // Start the simulation
+    //     followRules = true; // Follow the rules
+    //     video.pause(); // Pause the video
+    //     videoPaused = true;
+    //     saveCanvasImage(); // This calls your existing function to save the image
+    } else if (key === ' ' || key === 'Enter' ) {
         isPaused = !isPaused; // Toggle pause state
         if (isPaused) {
             video.play(); // Resume the video
@@ -256,6 +260,10 @@ function keyPressed() {
             video.pause(); // Pause the video
             videoPaused = true;
         }
+        followRules = ! followRules; // Follow the rules
+
+        saveCanvasImage(); // This calls your existing function to save the image
+
     } else if (key === 'g' || key === 'G') {
         showGrid = !showGrid; // Toggle grid visibility
     }
