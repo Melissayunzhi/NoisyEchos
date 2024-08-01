@@ -453,5 +453,5 @@ function showInstructionsAlert() {
 
 function saveAndOpenArena() {
     saveCanvasImage(); // This calls your existing function to save the image
-    //window.open('https://www.are.na/melissa-yunzhi/noisy-messages', '_blank'); // Opens Arena page in a new tab
+    window.open('https://www.are.na/melissa-yunzhi/noisy-messages', '_blank'); // Opens Arena page in a new tab
 }
