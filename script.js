@@ -30,26 +30,30 @@ let poses = [];
 
 let currentRule = 0;
 
-// This will be called every 10 seconds
-setInterval(() => {
-    currentRule = (currentRule + 1) % 4; // Cycle between 0 and 3
-}, 10000);
 
-function preload() {
-    bodyPose = ml5.bodyPose("BlazePose", () => {
-        console.log("BodyPose model loaded!");
-    });
+
+
+async function preload() {
+    console.log("Loading BodyPose (MoveNet) model...");
+    bodyPose = await ml5.bodyPose("MoveNet");
+
+    if (!bodyPose) {
+        console.error("Error: BodyPose model failed to load.");
+    } else {
+        console.log("BodyPose (MoveNet) model loaded successfully!", bodyPose);
+    }
 }
 
-// When the model is loaded
+
+
+
 function modelLoaded() {
-    console.log("Model Loaded!");
+    console.log("BodyPose Model Loaded!");
+    
     drawGenerationCountOnCanvas();
-    bodyPose.detectStart(video, gotPoses); // Start detection after the model is loaded
 }
 
-
-function setup() {
+async function setup() {
     createCanvas(windowWidth, windowHeight);
     gridSize = createVector(floor(width / CELL_SIZE), floor(height / CELL_SIZE));
 
@@ -76,10 +80,16 @@ function setup() {
     video.hide();
 
     pixelDensity(1);
-
-    // Start detecting poses in the webcam video
-    bodyPose.detectStart(video, gotPoses);
-
+    let modelCheckInterval = setInterval(() => {
+        if (bodyPose) {
+            console.log("Starting pose detection...");
+            bodyPose.detectStart(video, gotPoses);
+            clearInterval(modelCheckInterval); // Stop checking once the model is loaded
+        } else {
+            console.warn("BodyPose model not loaded yet, waiting...");
+        }
+    }, 100); // Check every 500ms
+    
     // Initialize the instructionsDiv
     instructionsDiv = createDiv();
     instructionsDiv.style('font-family', "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif");
