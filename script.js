@@ -258,6 +258,8 @@ function keyPressed() {
         video.play(); // Resume the video
 
         generationCount = 0; // Reset generation count
+        document.getElementById('generation-count').innerText = generationCount; // Update the display
+
     // } else if (key === 'Enter' ) {
     //     isPaused = false; // Start the simulation
     //     followRules = true; // Follow the rules
@@ -269,13 +271,18 @@ function keyPressed() {
         if (isPaused) {
             video.play(); // Resume the video
             videoPaused = false;
+            followRules = false; // Stop following the rules
+            generationCount = 0; // Reset generation count
+        document.getElementById('generation-count').innerText = generationCount; // Update the display
+
         } else {
             video.pause(); // Pause the video
             videoPaused = true;
-        }
-        followRules = ! followRules; // Follow the rules
+            followRules = true; // Start following the rules
+            saveCanvasImage(); // This calls your existing function to save the image
 
-        saveCanvasImage(); // This calls your existing function to save the image
+        }
+
 
     } else if (key === 'g' || key === 'G') {
         showGrid = !showGrid; // Toggle grid visibility
