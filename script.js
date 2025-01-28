@@ -158,7 +158,14 @@ function gotPoses(results) {
 }
 
 function draw() {
-    background(22, 30, 40);
+        background(22, 30, 40); // Normal background once loaded
+        // Your regular drawing code here...
+        text("Loading, please wait...", width / 2, height / 2);
+        textSize(22);
+        textAlign(CENTER, CENTER);
+        fill(255); // White text
+
+    
     detectCursorHover();
     translate(width, 0);
     scale(-1, 1);
