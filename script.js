@@ -36,15 +36,18 @@ setInterval(() => {
 }, 10000);
 
 function preload() {
-    // Load the bodyPose model
-    bodyPose = ml5.bodyPose("BlazePose", modelLoaded);
+    bodyPose = ml5.bodyPose("BlazePose", () => {
+        console.log("BodyPose model loaded!");
+    });
 }
 
 // When the model is loaded
 function modelLoaded() {
     console.log("Model Loaded!");
     drawGenerationCountOnCanvas();
+    bodyPose.detectStart(video, gotPoses); // Start detection after the model is loaded
 }
+
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
